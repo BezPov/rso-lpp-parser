@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lpp-parser
+spec:
+  selector:
+    matchLabels:
+      app: lpp-parser
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: lpp-parser
+    spec:
+      containers:
+        - image: bezpov/lpp-parser:1.0.6
+          name: lpp-parser-container
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 3
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lpp-parser-service
+  namespace: default
+  labels:
+    app: lpp-parser
+spec:
+  ports:
+    - protocol: TCP
+      port: 84
+      targetPort: 8080
+  selector:
+    app: lpp-parser
+  type: NodePort

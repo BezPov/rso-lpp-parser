@@ -35,7 +35,7 @@ class ParserApi {
     }
 
     static async getRoutesOnStation(stationId) {
-        const url = `${URL}stations/getRoutesOnStation?station_int_id=${stationId}`;
+        const url = `${URL}/stations/getRoutesOnStation?station_int_id=${stationId}`;
 
         try {
             const request = await axios.get(url);

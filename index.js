@@ -1,7 +1,5 @@
 const restify = require('restify');
 
-const etcd = require('./services/etcd');
-
 const logger = require('./services/logging');
 
 const options = {
@@ -14,23 +12,26 @@ const server = restify.createServer(options);
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
 
-server.get('/', (req, res, next) => {
-    res.json({
-        name: 'lpp-parser',
-        version: process.env.npm_package_version,
-        description: 'Parses the data from the external API'
-    });
-
-    return next();
-});
-
-require('./routes/infoRoutes')(server);
-require('./routes/healthRoutes')(server);
-require('./routes/metricsRoutes')(server);
-require('./routes/etcdRoutes')(server);
+require('./routes/init')(server);
 
 server.listen(8080, () => {
     console.log(`${options.name} ${options.version} listening at ${server.url}`);
     
     logger.info(`${options.name} ${options.version} listening at ${server.url}`);
+
+    const onDatabaseConnected = function () {
+        logger.info(`[${process.env.npm_package_name}] Database connected`);
+
+        const ParserApi = require('./api/parserApi');
+
+        ParserApi.parseStations();
+        ParserApi.parseBuses();
+    };
+
+    const onDatabaseError = function () {
+        logger.info(`[${process.env.npm_package_name}] An error occurred while connecting to database`);
+
+    };
+
+    require('./services/database')(onDatabaseConnected, onDatabaseError);
 });

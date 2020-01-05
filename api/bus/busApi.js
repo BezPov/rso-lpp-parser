@@ -9,8 +9,14 @@ class BusApi {
         return BusModel.findOne(selectorObject);
     }
 
-    static async findMany(selectorObject) {
-        return BusModel.find(selectorObject);
+    static async findMany(selectorObject, options) {
+        let operation = BusModel.find(selectorObject);
+
+        if (options.skip) operation = operation.skip(options.skip);
+
+        if (options.limit) operation = operation.limit(options.limit);
+
+        return operation;
     }
 
     static async create(data) {

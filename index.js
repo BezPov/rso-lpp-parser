@@ -1,8 +1,8 @@
 const restify = require('restify');
 
-const logger = require('./services/logging');
-
 const etcd = require('./services/etcd');
+
+const logger = require('./services/logging');
 
 const options = {
     name: 'lpp-parser',
@@ -18,7 +18,7 @@ server.get('/', (req, res, next) => {
     res.json({
         name: 'lpp-parser',
         version: process.env.npm_package_version,
-        description: 'Api gateway'
+        description: 'Parses the data from the external API'
     });
 
     return next();

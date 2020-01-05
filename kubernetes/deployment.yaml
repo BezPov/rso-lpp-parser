@@ -13,8 +13,11 @@ spec:
         app: lpp-parser
     spec:
       containers:
-        - image: bezpov/lpp-parser:1.0.6
+        - image: bezpov/lpp-parser:1.0.7
           name: lpp-parser-container
+          env:
+            - name: ETCD_SERVER
+              value: "http://etcd-client:2379"
           ports:
             - containerPort: 8080
           livenessProbe:

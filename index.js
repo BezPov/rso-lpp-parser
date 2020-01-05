@@ -30,7 +30,6 @@ server.listen(8080, () => {
 
     const onDatabaseError = function () {
         logger.info(`[${process.env.npm_package_name}] An error occurred while connecting to database`);
-
     };
 
     require('./services/database')(onDatabaseConnected, onDatabaseError);

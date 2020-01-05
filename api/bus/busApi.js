@@ -17,12 +17,11 @@ class BusApi {
         const bus = {
             busId: data.id,
             busNumber: data.group_name,
-            route: {
-                id: data.int_id,
-                oppositeRouteId: data.opposite_route_int_id,
-                name: data.route_name,
-                length: data.length
-            }
+            routeId: data.int_id,
+            oppositeRouteId: data.opposite_route_int_id,
+            name: data.route_name,
+            routeLength: data.length,
+            stations: data.stations
         };
 
         const busAlreadyExists = await BusApi.findOne({ busId: bus.busId });

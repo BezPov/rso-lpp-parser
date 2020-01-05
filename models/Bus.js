@@ -6,12 +6,17 @@ const busSchema = new mongoose.Schema({
         required: true
     },
     busNumber: String,
-    route: {
-        id: Number,
-        oppositeRouteId: Number,
-        name: String,
-        length: Number
-    }
+    routeId: Number,
+    oppositeRouteId: Number,
+    name: String,
+    routeLength: Number,
+    stations: [
+        {
+            _id: false,
+            stationId: String,
+            order: Number
+        }
+    ]
 });
 
 module.exports = mongoose.model('Bus', busSchema);

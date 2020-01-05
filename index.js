@@ -12,11 +12,24 @@ const server = restify.createServer(options);
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
 
+const corsMiddleware = require('restify-cors-middleware');
+
+const cors = corsMiddleware({
+    preflightMaxAge: 5,
+    origins: ['*'],
+    allowHeaders: ['X-App-Version'],
+    exposeHeaders: []
+});
+
+server.pre(cors.preflight);
+
+server.use(cors.actual);
+
 require('./routes/init')(server);
 
 server.listen(8082, () => {
     console.log(`${options.name} ${options.version} listening at ${server.url}`);
-    
+
     logger.info(`${options.name} ${options.version} listening at ${server.url}`);
 
     const onDatabaseConnected = function () {

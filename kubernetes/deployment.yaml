@@ -13,7 +13,7 @@ spec:
         app: lpp-parser
     spec:
       containers:
-        - image: bezpov/lpp-parser:1.0.9
+        - image: bezpov/lpp-parser:1.0.10
           name: lpp-parser-container
           env:
             - name: ETCD_SERVER

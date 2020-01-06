@@ -14,7 +14,7 @@ server.use(restify.plugins.bodyParser());
 
 require('./routes/init')(server);
 
-server.listen(8080, () => {
+server.listen(8082, () => {
     console.log(`${options.name} ${options.version} listening at ${server.url}`);
     
     logger.info(`${options.name} ${options.version} listening at ${server.url}`);

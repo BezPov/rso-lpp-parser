@@ -20,10 +20,6 @@ const initRoutes = function (server) {
             if (req.query.skip) options.skip = parseInt(req.query.skip);
 
             if (req.query.limit) options.limit = parseInt(req.query.limit);
-
-            if (req.query.busNumber) {
-                selector.busNumber = req.query.busNumber;
-            }
         }
 
         const fetchedBuses = await BusApi.findMany(selector, options);
@@ -39,7 +35,18 @@ const initRoutes = function (server) {
     });
 
     server.get('/buses/:busId', async function (req, res, next) {
-        const fetchedBus = await BusApi.findOne({stationId: req.params.busId});
+        const fetchedBus = await BusApi.findOne({busId: req.params.busId});
+
+        res.json({
+            success: true,
+            data: fetchedBus
+        });
+
+        return next();
+    });
+
+    server.get('/buses/routes/:busNumber', async function (req, res, next) {
+        const fetchedBus = await BusApi.findMany({busNumber: req.params.busNumber});
 
         res.json({
             success: true,

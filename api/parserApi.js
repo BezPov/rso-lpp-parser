@@ -43,7 +43,7 @@ class ParserApi {
             const data = request.data;
 
             if (data.success) {
-                return data.data.map((busNumber) => ({ busNumber }));
+                return data.data.map((busNumber) => ({busNumber}));
             } else {
                 logger.error(`[${process.env.npm_package_name}] The external API for getting station routes ${url} returned an error`);
             }
@@ -66,6 +66,8 @@ class ParserApi {
 
             if (data.success) {
                 for (const bus of data.data) {
+                    bus.stations = await ParserApi.getStationsOnRoute(bus.int_id);
+
                     await BusApi.create(bus);
                 }
 
@@ -76,6 +78,41 @@ class ParserApi {
         } catch (ex) {
             console.log(ex);
         }
+    }
+
+    static async getStationsOnRoute(routeId) {
+        const url = `${URL}/routes/getStationsOnRoute?route_int_id=${routeId}`;
+
+        try {
+            const request = await axios.get(url);
+
+            const data = request.data;
+
+            if (data.success) {
+                return data.data
+                    .map((station) => ({
+                        stationId: station.int_id,
+                        order: station.order_no
+                    }))
+                    .sort((a, b) => {
+                        if (a.order > b.order) {
+                            return 1;
+                        }
+
+                        if (a.order < b.order) {
+                            return -1;
+                        }
+
+                        return 0;
+                    });
+            } else {
+                logger.error(`[${process.env.npm_package_name}] The external API for getting stations on routes ${url} returned an error`);
+            }
+        } catch (ex) {
+            logger.error(`[${process.env.npm_package_name}] Stations on routes fetching encountered an error: ${JSON.stringify(ex)}`);
+        }
+
+        return null;
     }
 }
 

@@ -4,7 +4,7 @@ Building the Docker image:
 
 Running the Docker image:
 
-`docker container run --publish 8080:8080 --detach --name lpp-parser lpp-parser:1.0.0`
+`docker container run --publish 8082:8082 --detach --name lpp-parser lpp-parser:1.0.0`
 
 Removing the Docker image:
 

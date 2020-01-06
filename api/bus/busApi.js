@@ -9,20 +9,25 @@ class BusApi {
         return BusModel.findOne(selectorObject);
     }
 
-    static async findMany(selectorObject) {
-        return BusModel.find(selectorObject);
+    static async findMany(selectorObject, options) {
+        let operation = BusModel.find(selectorObject);
+
+        if (options.skip) operation = operation.skip(options.skip);
+
+        if (options.limit) operation = operation.limit(options.limit);
+
+        return operation;
     }
 
     static async create(data) {
         const bus = {
             busId: data.id,
             busNumber: data.group_name,
-            route: {
-                id: data.int_id,
-                oppositeRouteId: data.opposite_route_int_id,
-                name: data.route_name,
-                length: data.length
-            }
+            routeId: data.int_id,
+            oppositeRouteId: data.opposite_route_int_id,
+            name: data.route_name,
+            routeLength: data.length,
+            stations: data.stations
         };
 
         const busAlreadyExists = await BusApi.findOne({ busId: bus.busId });

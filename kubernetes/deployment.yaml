@@ -19,17 +19,17 @@ spec:
             - name: ETCD_SERVER
               value: "http://etcd-client:2379"
           ports:
-            - containerPort: 8080
+            - containerPort: 8082
           livenessProbe:
             httpGet:
               path: /health/live
-              port: 8080
+              port: 8082
             initialDelaySeconds: 20
             periodSeconds: 3
           readinessProbe:
             httpGet:
               path: /health/ready
-              port: 8080
+              port: 8082
             initialDelaySeconds: 20
             periodSeconds: 3
       restartPolicy: Always
@@ -45,7 +45,7 @@ spec:
   ports:
     - protocol: TCP
       port: 84
-      targetPort: 8080
+      targetPort: 8082
   selector:
     app: lpp-parser
   type: NodePort

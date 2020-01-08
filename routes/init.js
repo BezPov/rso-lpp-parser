@@ -13,8 +13,4 @@ module.exports = function (server) {
     require('./healthRoutes')(server);
     require('./metricsRoutes')(server);
     require('./etcdRoutes')(server);
-
-    require('./busRoutes')(server);
-    require('./stationRoutes')(server);
-    require('./arrivalRoutes')(server);
 };

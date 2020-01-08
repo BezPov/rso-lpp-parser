@@ -44,7 +44,7 @@ metadata:
 spec:
   ports:
     - protocol: TCP
-      port: 84
+      port: 90
       targetPort: 8082
   selector:
     app: lpp-parser

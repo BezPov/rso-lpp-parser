@@ -1,7 +1,7 @@
 const axios = require('axios');
 const logger = require('../services/logging');
 
-const serviceUrl = 'http://lpp-stations:93';
+const serviceUrl = 'http://lpp-stations-service:93';
 
 class StationRequestHandler {
     static async create(postData) {

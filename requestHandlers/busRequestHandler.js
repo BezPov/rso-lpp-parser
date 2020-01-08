@@ -1,7 +1,7 @@
 const axios = require('axios');
 const logger = require('../services/logging');
 
-const serviceUrl = 'lpp-buses';
+const serviceUrl = 'http://lpp-buses:92';
 
 class BusRequestHandler {
     static async create(postData) {

@@ -2,8 +2,8 @@ const axios = require('axios');
 
 const logger = require('../services/logging');
 
-const StationApi = require('./station/stationApi');
-const BusApi = require('./bus/busApi');
+const StationRequestHandler = require('../requestHandlers/stationRequestHandler');
+const BusRequestHandler = require('../requestHandlers/busRequestHandler');
 
 const URL = 'http://data.lpp.si';
 
@@ -22,7 +22,7 @@ class ParserApi {
                 for (const station of data.data) {
                     station.routes = await ParserApi.getRoutesOnStation(station.int_id);
 
-                    await StationApi.create(station);
+                    await StationRequestHandler.create(station);
                 }
 
                 logger.info(`[${process.env.npm_package_name}] Station parsing successfully finished`);
@@ -43,7 +43,7 @@ class ParserApi {
             const data = request.data;
 
             if (data.success) {
-                return data.data.map((busNumber) => ({busNumber}));
+                return data.data.map((busNumber) => ({ busNumber }));
             } else {
                 logger.error(`[${process.env.npm_package_name}] The external API for getting station routes ${url} returned an error`);
             }
@@ -68,7 +68,7 @@ class ParserApi {
                 for (const bus of data.data) {
                     bus.stations = await ParserApi.getStationsOnRoute(bus.int_id);
 
-                    await BusApi.create(bus);
+                    await BusRequestHandler.create(bus);
                 }
 
                 logger.info(`[${process.env.npm_package_name}] Bus routes parsing successfully finished`);

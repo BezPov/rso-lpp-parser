@@ -2,6 +2,8 @@ const restify = require('restify');
 
 const logger = require('./services/logging');
 
+let CronJob = require('cron').CronJob;
+
 const options = {
     name: 'lpp-parser',
     version: process.env.npm_package_version
@@ -41,8 +43,10 @@ server.listen(8082, () => {
 
         const ParserApi = require('./api/parserApi');
 
-        ParserApi.parseStations();
-        ParserApi.parseBuses();
+        new CronJob('0 03 * * * *', function () {
+            ParserApi.parseStations();
+            ParserApi.parseBuses();
+        }, null, true, null, null, true);
     };
 
     const onDatabaseError = function () {

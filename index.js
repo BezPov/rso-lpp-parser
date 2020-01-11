@@ -2,6 +2,8 @@ const restify = require('restify');
 
 const logger = require('./services/logging');
 
+const etcd = require('./services/etcd');
+
 let CronJob = require('cron').CronJob;
 
 const options = {
@@ -41,16 +43,34 @@ server.listen(8082, () => {
     const onDatabaseConnected = function () {
         logger.info(`[${process.env.npm_package_name}] Database connected`);
 
-        const ParserApi = require('./api/parserApi');
+        const watcher = etcd.watcher("parser_schedule");
 
-        new CronJob('0 03 * * * *', function () {
-            ParserApi.parseStations();
-            ParserApi.parseBuses();
-        }, null, true, null, null, true);
+        watcher.on("change", (res) => {
+            runParserJob(res.node.value, false);
+        }); // Triggers on all changes
+
+        etcd.get("parser_schedule", (err, res) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            runParserJob(res.node.value, true);
+        });
     };
 
     const onDatabaseError = function () {
         logger.info(`[${process.env.npm_package_name}] An error occurred while connecting to database`);
+    };
+
+    const runParserJob = function (schedule, runOnInit) {
+        const ParserApi = require('./api/parserApi');
+
+        new CronJob(schedule, function () {
+            logger.info(`[${process.env.npm_package_name}] Parsing jobs started`);
+            ParserApi.parseStations();
+            ParserApi.parseBuses();
+        }, null, true, null, null, runOnInit);
     };
 
     require('./services/database')(onDatabaseConnected, onDatabaseError);
